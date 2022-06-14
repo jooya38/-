@@ -1,0 +1,49 @@
+float gravity=9.8/10;    //중력값 설정
+float restitution=0.7;   //반환값 0.7
+int r, x, y, angle, speed;  //반지름,x좌표,y좌표,각,속도 변수 선언
+ 
+class Ball      //클래스->공에 관한 변수,함수를 묶어서 정리함
+{
+  float x, y, w, h, dx, dy;        //x좌표,y좌표,너비,높이,x좌표변화량,y좌표변화량 변수 선언
+  Ball(float X, float Y, float W, float H, float DX, float DY)      
+  {  x=X; y=Y; w=W; h=H; dx=DX; dy=DY; } //(x좌표,y좌표,너비,높이,x좌표변화량,y좌표변화량)형태로 공 설정값에 저장
+  
+  void move()    //움직임 함수
+  {
+    dy+=gravity;    //y좌표 변화량은 각 값에 중력을 더한 값을 저장
+    x+=dx;     //x좌표는  x좌표에 x좌표 변화량을 더한 값을 저장
+    y+=dy;  //y좌표는 y좌표에 y좌표 변화량을 더한 값을 저장
+    if(x+w/2>width){x=width-w/2; dx*=-restitution;}    //공의 오른쪽이 측면에 부딪힐 경우 
+    else if(x-w/2<0){x=w/2; dx*=-restitution;}   //공의 왼쪽이 측면과 부딪힐 경우
+    if(y+h/2>height){y=height-h/2; dy*=-restitution;}   //공의 위쪽이 벽과 부딪힐 경우
+    else if(y-h/2<0){y=h/2; dy*=-restitution;}     //공의 아래쪽이 벽과 부딪힐 경우
+  }
+  
+  void display()  //화면 데이터 함수
+  {
+    fill(0,192);    //
+    ellipse(x,y,w,h); //너비w,높이h인 타원을 (x,y)에 그림
+  }
+}
+
+Ball ball;  //공 생성
+
+void setup()    //기본 설정
+{
+  size(1024, 576); frameRate(30); noStroke();   //화면 크기1024x576, 화면 속도 30, noStroke() : 도형의 외곽선 색 지정안함
+  r=10;    //반지름=10
+  x=r;    //x좌표=r
+  y=height/2;  //y좌표=화면높이/2   
+  angle=30;    //각도=30
+  speed=45;   //속도=45
+  float dx=speed*cos(radians(angle));     //radians(angle) : 각도를 라디안으로 변환
+  float dy=-speed*sin(radians(angle));  
+  ball=new Ball(x,y,r*2,r*2,dx,dy);   //새로운 공으로 불러오기
+}
+
+void draw()     //실행 화면에 보여줌
+{  
+  background(220);     //화면색 설정
+  ball.move();       //공 움직임 함수 실행
+  ball.display();       //공 배치 함수 실행
+}
